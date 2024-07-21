@@ -1,0 +1,64 @@
+name: dev miniproject
+
+pool: Default
+trigger: none
+  # branches:
+  #   include:
+  #   - master
+  # paths:
+  #   include:
+  #   - Environment/Dev
+  #   exclude:
+  #   - Environment/Prod  
+stages:
+  - stage: init & plan stage
+    displayName: init & plan stage
+    jobs:
+      - job: initplan
+        steps:  
+        - task: TerraformInstaller@1
+          inputs:
+            terraformVersion: 'latest'
+        - task: TerraformTaskV4@4
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Dev'
+            backendServiceArm: 'portal-dev'
+            backendAzureRmResourceGroupName: 'ABC'
+            backendAzureRmStorageAccountName: 'storageabcd123456789'
+            backendAzureRmContainerName: 'state'
+            backendAzureRmKey: 'prod.terraform.tfstate'
+        - task: TerraformTaskV4@4
+          inputs:
+            provider: 'azurerm'
+            command: 'plan'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Dev'
+            environmentServiceNameAzureRM: 'portal-dev'
+
+
+  - stage: init & plan stage
+    displayName: init & plan stage
+    jobs:
+      - job: initplan
+        steps:  
+        - task: TerraformInstaller@1
+          inputs:
+            terraformVersion: 'latest'
+        - task: TerraformTaskV4@4
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Prod'
+            backendServiceArm: 'portal-dev'
+            backendAzureRmResourceGroupName: 'ABC'
+            backendAzureRmStorageAccountName: 'storageabcd123456789'
+            backendAzureRmContainerName: 'state'
+            backendAzureRmKey: 'prod.terraform.tfstate'
+        - task: TerraformTaskV4@4
+          inputs:
+            provider: 'azurerm'
+            command: 'plan'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Prod'
+            environmentServiceNameAzureRM: 'portal-dev'
+  

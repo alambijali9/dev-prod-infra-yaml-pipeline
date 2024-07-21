@@ -1,0 +1,74 @@
+name: Prod miniproject
+
+pool: Default
+trigger: none
+  # branches:
+  #   include:
+  #   - master
+  # paths:
+  #   include:
+  #   - Environment/Prod
+  #   exclude:
+  #   - Environment/Prod  
+stages:
+  - stage: init & plan stage
+    displayName: init & plan stage
+    jobs:
+      - job: initplan
+        steps:  
+        - task: TerraformInstaller@1
+          inputs:
+            terraformVersion: 'latest'
+        - task: TerraformTaskV4@4
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Prod'
+            backendServiceArm: 'portal-dev'
+            backendAzureRmResourceGroupName: 'ABC'
+            backendAzureRmStorageAccountName: 'storageabcd123456789'
+            backendAzureRmContainerName: 'state'
+            backendAzureRmKey: 'prod.terraform.tfstate'
+        - task: TerraformTaskV4@4
+          inputs:
+            provider: 'azurerm'
+            command: 'plan'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Prod'
+            environmentServiceNameAzureRM: 'portal-dev'
+  - stage: manualvalidation
+    displayName: manualvalidation
+    dependsOn: init & plan stage
+    jobs:
+      - job: validationjob
+        steps:
+        - task: ManualValidation@1
+          inputs:
+            notifyUsers: 'alambijali'
+            approvers: 'alambijali9@gmail.com'
+  - stage:
+    dependsOn: manualvalidation
+    displayName: apply
+    jobs: 
+      - job: 
+        steps:
+        - task: TerraformTaskV4@4
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Prod'
+            backendServiceArm: 'portal-dev'
+            backendAzureRmResourceGroupName: 'ABC'
+            backendAzureRmStorageAccountName: 'storageabcd123456789'
+            backendAzureRmContainerName: 'state'
+            backendAzureRmKey: 'prod.terraform.tfstate'
+        - task: TerraformTaskV4@4
+          inputs:
+            provider: 'azurerm'
+            command: 'apply'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Prod'
+            environmentServiceNameAzureRM: 'portal-dev'
+        
+
+   
+
+ 
