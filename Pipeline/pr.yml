@@ -1,4 +1,4 @@
-name: dev miniproject
+name: dev & prod pr miniproject
 
 pool: Default
 trigger: none
@@ -61,6 +61,4 @@ stages:
             command: 'plan'
             workingDirectory: '$(System.DefaultWorkingDirectory)/Environment/Prod'
             environmentServiceNameAzureRM: 'portal-dev'
-  
-
-#A
+              
