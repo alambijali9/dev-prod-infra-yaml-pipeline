@@ -28,7 +28,7 @@ stages:
             backendAzureRmResourceGroupName: 'ABC'
             backendAzureRmStorageAccountName: 'storageabcd123456789'
             backendAzureRmContainerName: 'state'
-            backendAzureRmKey: 'prod.terraform.tfstate'
+            backendAzureRmKey: 'Dev.terraform.tfstate'
         - task: TerraformTaskV4@4
           inputs:
             provider: 'azurerm'
@@ -60,7 +60,7 @@ stages:
             backendAzureRmResourceGroupName: 'ABC'
             backendAzureRmStorageAccountName: 'storageabcd123456789'
             backendAzureRmContainerName: 'state'
-            backendAzureRmKey: 'prod.terraform.tfstate'
+            backendAzureRmKey: 'Dev.terraform.tfstate'
         - task: TerraformTaskV4@4
           inputs:
             provider: 'azurerm'
